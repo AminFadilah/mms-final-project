@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Room</title>
+  </head>
+  <body>
+    <section layout:fragment="content">
+      <div class="container">
+        <div
+          class="d-flex justify-content-between align-items-center mt-5 mb-3 px-3 bg-primary p-5 rounded-2 text-light"
+        >
+        <div th:attr="data-is-admin=${isAdmin}" hidden></div>
+          <div class="d-flex flex-column">
+            <h4 class="fw-bold">Rooms</h4>
+            <p>
+              The session timings are following your local timezone
+              <strong> Asia/Jakarta</strong>
+            </p>
+          </div>
+          
+          <button type="button"
+          data-bs-toggle="modal"
+          data-bs-target="#createRoom" class="btn btn-light text-primary shadow-lg" th:if="${isAdmin}">
+            <i class="bi bi-plus-lg me-2" ></i>Add Room
+          </button>
+          
+        </div>
+
+        <table id="table-room" class="table table-hover table-borderless w-100">
+          <thead class="table-primary">
+            <tr>
+              <th class="col-1">No</th>
+              <th class="col-3">Name</th>
+              <th class="col-2">Capacity</th>
+              <th class="col-2">Location</th>
+              <th class="col-2">Available</th>
+              <th class="col-2" >Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <input type="hidden" id="roomId" />
+      <div
+        class="modal fade"
+        id="createRoom"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title fw-bold" id="staticBackdropLabel">
+                Create Room
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="name"
+                  id="name"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="capacity" class="form-label">Capacity</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="capacity"
+                  id="capacity"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="location"
+                  id="location"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="isAvailable" class="form-label">Available</label>
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  name="isAvailable"
+                  id="isAvailable"
+                />
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="submitForm()"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="modal fade"
+        id="detailRoom"
+        tabindex="-1"
+        aria-labelledby="detailModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="detailModalLabel">Detail Room</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3 d-flex gap-2">
+                <label class="form-label">ID :</label>
+                <p id="detailRoomId"></p>
+              </div>
+              <div class="mb-3 d-flex gap-2">
+                <label class="form-label">Name :</label>
+                <p id="detailName"></p>
+              </div>
+              <div class="mb-3 d-flex gap-2">
+                <label class="form-label">Capacity :</label>
+                <p id="detailCapacity"></p>
+              </div>
+              <div class="mb-3 d-flex gap-2">
+                <label class="form-label">Location :</label>
+                <p id="detailLocation"></p>
+              </div>
+              <div class="mb-3 d-flex gap-2">
+                <label class="form-label">Available :</label>
+                <p id="detailisAvailable"></p>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <th:block layout:fragment="script">
+      <script th:src="@{/js/room.js}"></script>
+    </th:block>
+  </body>
+</html>

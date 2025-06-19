@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/main}"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Meeting Archive</title>
+  </head>
+  <body>
+    <section layout:fragment="content">
+      <div class="container">
+        <div
+          class="d-flex justify-content-between align-items-center mt-5 mb-3 px-3 bg-primary p-5 rounded-2 text-light"
+        >
+          <div class="d-flex flex-column">
+            <h4 class="fw-bold">Meetings</h4>
+            <p>
+              The session timings are following your local timezone
+              <strong> Asia/Jakarta</strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="container mt-4 mb-5">
+          <table
+            id="meetingTable"
+            class="table table-hover table-borderless w-100"
+          >
+            <thead class="table-primary">
+              <tr>
+                <th class="col-1 text-secondary">No</th>
+                <th class="col-3 text-secondary">Meeting Name</th>
+                <th class="col-2 text-secondary">Date</th>
+                <th class="col-2 text-secondary">Start</th>
+                <th class="col-2 text-secondary">End</th>
+                <th class="col-2 text-secondary">Room</th>
+                <th class></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Use Thymeleaf iteration to populate table rows -->
+              <!-- <tr>
+                <td id="number" class="text-secondary"></td>
+              </tr> -->
+              <tr th:each="meeting, number : ${meetings}">
+                <td th:text="${number.count}" class="text-secondary"></td>
+                <td th:text="${meeting.name}" class="text-secondary">
+                  Meeting Name
+                </td>
+                <td
+                  th:text="${#temporals.format(meeting.startMeeting, 'EEEE, dd/MM/yyyy')}"
+                  class="text-secondary"
+                >
+                  Date
+                </td>
+                <td
+                  th:text="${#temporals.format(meeting.startMeeting, 'HH:mm')}"
+                  class="text-secondary"
+                >
+                  Start Time
+                </td>
+                <td
+                  th:text="${#temporals.format(meeting.endMeeting, 'HH:mm')}"
+                  class="text-secondary"
+                >
+                  End Time
+                </td>
+                <td class="text-secondary">
+                  <span th:unless="${meeting.linkRoom}">
+                    <span th:text="${meeting.room.name}">Room Name</span>
+                  </span>
+                  <span th:if="${meeting.linkRoom}">
+                    <a
+                      th:href="${meeting.linkRoom}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      th:text="${meeting.linkRoom}"
+                      >Link Room</a
+                    >
+                  </span>
+                </td>
+                <td class="text-secondary">
+                  <div class="dropdown">
+                    <button
+                      class="btn"
+                      type="button"
+                      id="dropdownMenuButton"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      style="outline: none; border: none"
+                    >
+                      <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <div
+                      class="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton"
+                    >
+                      <!-- <a
+                        class="dropdown-item"
+                        th:href="@{/mom/{id} (id=${meeting.id})}"
+                        style="cursor: pointer"
+                        >View MOM</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        th:href="@{/tracking-history/{id} (id=${meeting.id})}"
+                        >activity</a
+                      > -->
+                      <form th:action="@{/meeting/restore/{id}(id=${meeting.id})}" method="post">
+                        <button type="submit" class="dropdown-item" style="cursor: pointer">Restore</button>
+                      </form>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <th:block layout:fragment="script">
+      <script th:src="@{/js/meeting.js}"></script>
+    </th:block>
+  </body>
+</html>

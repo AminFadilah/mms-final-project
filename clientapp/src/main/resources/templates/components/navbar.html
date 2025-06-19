@@ -1,0 +1,35 @@
+<nav th:fragment="navbar" class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li
+          class="nav-item"
+          th:class="${#httpServletRequest.requestURI.endsWith('/upcoming')} ? 'nav-item active' : 'nav-item'"
+        >
+          <a class="nav-link" th:href="@{/meeting/upcoming}">
+            <span
+              th:class="${#httpServletRequest.requestURI.endsWith('/upcoming')} ? 'fw-bold text-primary active-menu' : ''"
+              >Upcoming</span
+            >
+          </a>
+        </li>
+        <li
+          class="nav-item"
+          th:class="${#httpServletRequest.requestURI.endsWith('/past')} ? 'nav-item active' : 'nav-item'"
+        >
+          <a class="nav-link" th:href="@{/meeting/past}">
+            <span
+              th:class="${#httpServletRequest.requestURI.endsWith('/past')} ? 'fw-bold text-primary active-menu' : ''"
+              >Past</span
+            >
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<style>
+  .active-menu {
+    border-bottom: 2px solid #007bff;
+  }
+</style>

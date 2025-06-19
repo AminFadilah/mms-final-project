@@ -1,0 +1,120 @@
+<!-- sidebar -->
+<nav th:fragment="sidebar" class="sidebar">
+  <div class="menu_content">
+    <ul class="menu_items">
+      <div class="menu_title menu_dahsboard">
+        <div class="d-flex justify-content-center mb-3">
+          <img
+            th:src="@{/img/logo-meet.png}"
+            id="dashboardIcon"
+            alt="Dashboard Icon"
+            class="menu_icon"
+          />
+        </div>
+        <div
+          class="menu-text d-flex justify-content-center align-items-center  account-name"
+        >
+          <div>Hello,</div>
+          <div class="dropdown">
+            <button
+              class="btn text-danger dropdown-toggle p-1"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              th:text="${loggedInUsername}"
+              style="background-color: transparent; border: none"
+            >
+              Dropdown
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a
+                  href="/logout"
+                  onclick="confirmLogout(event)"
+                  class="dropdown-item"
+                >
+                  <div >
+                    <span style="text-decoration: none" class="text-danger"
+                      >Logout</span
+                    >
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <li class="item" th:class="${#httpServletRequest.requestURI.startsWith('/meeting') && !#httpServletRequest.requestURI.startsWith('/meeting/deleted')} ? 'active-text active-item' : ''">
+        <a th:href="@{/meeting/upcoming}" class="nav_link submenu_item">
+            <span class="navlink_icon">
+                <i class="logo_item_dash bi bi-camera-reels"></i>
+            </span>
+            <span class="navlink">Meeting</span>
+        </a>
+    </li>
+    
+    <li class="item" th:class="${#httpServletRequest.requestURI.startsWith('/room')} ? 'active-text active-item' : ''">
+        <a th:href="@{/room}" class="nav_link submenu_item" th:if="${isAdmin}">
+            <span class="navlink_icon">
+                <i class="logo_item_dash bi bi-building"></i>
+            </span>
+            <span class="navlink">Room</span>
+        </a>
+    </li>
+    
+    <li class="item" th:class="${#httpServletRequest.requestURI.equals('/meeting/deleted')} ? 'active-text active-item' : ''">
+        <a th:href="@{/meeting/deleted}" class="nav_link submenu_item">
+            <span class="navlink_icon">
+                <i class="logo_item_dash bi bi-archive"></i>
+            </span>
+            <span class="navlink">Archive</span>
+        </a>
+    </li>
+    
+    </ul>
+
+    <!-- Sidebar Open / Close -->
+
+    <div class="bottom_content">
+      <div class="bottom expand_sidebar">
+        <span> Expand</span>
+        <i class="bx bx-log-in"></i>
+      </div>
+      <div class="bottom collapse_sidebar">
+        <span> Collapse</span>
+        <i class="bx bx-log-out"></i>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const navItems = document.querySelectorAll(".item");
+  
+      navItems.forEach(function (item) {
+        const href = item.querySelector("a").getAttribute("href");
+        if (window.location.pathname.endsWith(href)) {
+          item.classList.add("active-text", "active-item");
+        }
+      });
+    });
+  </script>
+  <script>
+    function confirmLogout(event) {
+      event.preventDefault();
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You will be logged out",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, logout",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/logout";
+        }
+      });
+      return false;
+    }
+  </script>
+</nav>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/main}"
+>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Update Meeting</title>
+  </head>
+
+  <body>
+    <section class="py-5" layout:fragment="content">
+      <section class="container">
+        <form
+          class="border px-4 py-5 rounded-2"
+          th:action="@{/meeting/{id} (id = ${meetingDTO.id})}"
+          th:object="${meetingDTO}"
+          th:method="PUT"
+        >
+          <div class="mb-3">
+            <label for="name" class="form-label">Meeting Name</label>
+            <input
+              type="text"
+              class="form-control w-50"
+              th:field="*{name}"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea
+              class="form-control w-50"
+              th:field="*{description}"
+              required
+            ></textarea>
+          </div>
+          <div class="mb-3 d-flex flex-column">
+            <label for="attendeeSelect" class="form-label">Attendees</label>
+            <select
+              class="form-control w-50"
+              multiple="multiple"
+              id="attendeeSelect"
+              th:data-participant-names="${participantNames}"
+            >
+              <!-- <option  th:text="${participantNames}" id="participantNames" hidden
+            ></option> -->
+            </select>
+          
+          <div>
+            <button
+              type="button"
+              class="btn btn-success mt-3"
+              data-bs-toggle="modal"
+              data-bs-target="#create-external"
+            >
+              Add Attendees
+            </button>
+          </div>
+          </div>
+          <div class="mb-3">
+            <label for="note-taker" class="form-label w-50">Note Taker</label>
+            <select
+              class="form-select w-50"
+              id="note-taker"
+              th:field="*{noteTakerId}"
+              required
+            >
+              <option value="">Choose Note Taker</option>
+              <option
+                th:each="participant : ${participants}"
+                th:value="${participant.id}"
+                th:text="${participant.name}"
+              ></option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="meetingDate" class="form-label">Date</label>
+            <input
+              type="date"
+              class="form-control w-25"
+              id="meetingDate"
+              required
+              min="yyyy-MM-dd"
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Start Meeting</label>
+            <div class="input-group">
+              <select
+                class="form-select custom-select"
+                id="startHour"
+                required
+              ></select>
+              <select
+                class="form-select custom-select"
+                id="startMinute"
+                required
+              ></select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">End Meeting</label>
+            <div class="input-group">
+              <select
+                class="form-select custom-select"
+                id="endHour"
+                required
+              ></select>
+              <select
+                class="form-select custom-select"
+                id="endMinute"
+                required
+              ></select>
+            </div>
+          </div>
+            <!-- penampung input time -->
+            <div class="mb-3">
+              <input
+                type="hidden"
+                id="start-meeting"
+              />
+            </div>
+            <div class="mb-3">
+              <input
+                type="hidden"
+                id="end-meeting"
+                
+              />
+            </div>
+
+          <div class="mb-3">
+            <input
+              type="datetime-local"
+              class="form-control w-25"
+              th:field="*{startMeeting}"
+              id="startMeeting"
+              pattern="(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})"
+              hidden
+            />
+          </div>
+
+          <div class="mb-3">
+            <input
+              type="datetime-local"
+              class="form-control w-25"
+              th:field="*{endMeeting}"
+              id="endMeeting"
+              pattern="(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})"
+              hidden
+            />
+          </div>
+
+          <div class="mb-3">
+            <div class="d-flex justify-content-between w-50">
+              <label for="linkRoom" class="form-label">Meeting Link</label>
+              <div class="form-check form-switch">
+                <input type="hidden" th:field="*{isOnline}" value="false" />
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  data-toggle="switch"
+                  id="isOnlineSwitch"
+                  checked
+                />
+                <label class="form-check-label" for="isOnlineSwitch"
+                  >Online Meeting</label
+                >
+              </div>
+            </div>
+            <input
+              type="text"
+              class="form-control w-50"
+              th:field="*{linkRoom}"
+              required
+              id="meetingLinkInput"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="room" class="form-label w-50">Room Meeting</label>
+            <select
+              class="form-select w-50"
+              id="room"
+              th:field="*{roomId}"
+              required
+            >
+              <option value="">Select Room</option>
+              <option
+                th:each="room : ${rooms}"
+                th:if="${room.isAvailable}"
+                th:value="${room.id}"
+                th:text="${room.name}"
+              ></option>
+            </select>
+          </div>
+
+          <!-- <div class="mb-3">
+        <label for="initiator" class="form-label w-50">Initiator</label>
+        <select class="form-select w-50" id="initiator" th:field="*{initiatorId}" onchange="printInitiatorId()" required >
+          <option value="">Initiator</option>
+          <option th:each="participant : ${participants}" th:value="${participant.id}" th:text="${participant.name}">
+          </option>
+        </select>
+      </div> -->
+
+          <div class="mt-5">
+            <a
+              class="btn btn-outline-primary me-3"
+              th:href="@{/meeting/upcoming}"
+              >Back</a
+            >
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              Update Meeting
+            </button>
+          </div>
+          <input type="hidden" th:field="*{attendees}" id="selectedAttendees" />
+        </form>
+        <div class="overlay" id="overlay">
+          <span class="loader">Sending Invitation to Attendee</span>
+        </div>
+      </section>
+
+      <!-- Modal-create -->
+      <div
+        class="modal fade"
+        id="create-external"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header bg-primary text-light">
+              <h5 class="modal-title fw-bold" id="staticBackdropLabel">
+                Add Attendee
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="name-create" class="form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="name"
+                  id="name-create"
+                  required
+                />
+                <label for="email-create" class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  id="email-create"
+                  required
+                />
+                <label for="phone-create" class="form-label">Phone</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="phone"
+                  id="phone-create"
+                  required
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="addAttendee()"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <th:block layout:fragment="script">
+      <script th:src="@{/js/update.js}"></script>
+    </th:block>
+  </body>
+</html>

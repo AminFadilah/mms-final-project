@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/main}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <title>Meeting History</title>
+    <!-- Include your CSS and other dependencies here -->
+  </head>
+  <body>
+    <section layout:fragment="content">
+      <div class="container">
+        <div
+          class="d-flex justify-content-between align-items-center mt-5 mb-3 px-3 bg-primary p-5 rounded-2 text-light"
+        >
+          <div class="d-flex flex-column">
+            <h4 class="fw-bold">Meeting Activity</h4>
+            <p>Exploring Activity of Your Meeting History</p>
+          </div>
+        </div>
+        <div class="d-flex flex-column rounded-2 shadow-sm">
+          <div class="mt-3 d-flex justify-content-between  mx-3">
+            <div>Meeting Name</div>
+            <span th:text="${meeting.name}">Meeting Name</span>
+          </div>
+          <div class="d-flex justify-content-between mx-3">
+            <div>Description</div>
+            <span th:text="${meeting.description}">Meeting Description</span>
+          </div>
+
+          <hr class="mb-3" />
+          <div class="container">
+            <div class="row">
+              <div class="col-md-6">
+                <h4 class="mb-4">Activities</h4>
+                <ul class="timeline">
+                  <li th:each="history : ${trackingHistoryList}" class="mb-3">
+                    <div>
+                      
+                      <p class="mb-1 fw-bold text-info" th:text="${#temporals.format(history.date, 'd MMMM, yyyy')}">Date</p>
+                      <div class="d-flex flex-column">
+           
+                        <div class="d-flex">
+
+                          <span th:if="${history.status.name eq 'created'}" class="badge bg-info mb-1">Created</span>
+                          <span th:if="${history.status.name eq 'meeting updated'}" class="badge bg-warning mb-1">Meeting Updated</span>
+                          <span th:if="${history.status.name eq 'done'}" class="badge bg-success mb-1">Done</span>
+                          <span th:if="${history.status.name eq 'mom created'}" class="badge bg-info mb-1">MOM Created</span>
+                          <span th:if="${history.status.name eq 'mom updated'}" class="badge bg-warning mb-1">MOM Updated</span>
+                          <span th:if="${history.status.name eq 'cancelled'}" class="badge bg-danger mb-1">Cancelled</span>
+                        </div>
+                        <div class="d-flex gap-1">
+
+                          <p >by</p>
+                          <p  class="mb-1 text-danger " th:text="${history.participant.name}">Participant Name</p>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          
+        </div>
+      </div>
+    </section>
+    <th:block layout:fragment="script">
+      <!-- <script th:src="@{/js/meeting.js}"></script> -->
+    </th:block>
+    <!-- Include your JavaScript and other dependencies here -->
+  </body>
+</html>

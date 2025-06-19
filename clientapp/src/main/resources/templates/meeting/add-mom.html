@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/main}"
+>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tiny.cloud/1/g2pew6dafo8beu9vp57sou1h1ktid2ps0kc9065yopk37xte/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <title>Minutes of Meeting</title>
+  </head>
+
+  <body>
+    <section class="py-5" layout:fragment="content">
+      <section class="container">
+        <form
+          class="border px-4 py-5 rounded-2"
+          th:action="@{/meeting/add-mom/{id} (id = ${meeting.id})}"
+          th:object="${mom}"
+          th:method="POST"
+        >
+          <div class="mb-3">
+            <label for="name" class="form-label">Dicussion</label>
+            <textarea
+              
+              class="form-control w-50 discussion"
+              th:field="*{discussion}"
+              placeholder="Type meeting discussion here"
+            ></textarea>
+          </div>
+        
+          <div class="mb-3">
+            <label for="name" class="form-label">Result</label>
+            <textarea
+              class="form-control w-50 discussion"
+              th:field="*{result}"
+              placeholder="Type meeting result here"
+            ></textarea>
+          </div>
+          <div class="mt-5">
+            <a class="btn btn-outline-primary me-3" th:href="@{/meeting/past}"
+              >Back</a
+            >
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              Publish
+            </button>
+          </div>
+        </form>
+        <script >
+          tinymce.init({
+        selector: '.discussion',
+        invalid_elements: 'textarea'
+          });
+        </script>
+      </section>
+    </section>
+    <th:block layout:fragment="script">
+      <script th:src="@{/js/participant.js}"></script>
+    </th:block>
+  </body>
+</html>

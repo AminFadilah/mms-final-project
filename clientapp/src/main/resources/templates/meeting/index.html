@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/main}"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Meeting</title>
+  </head>
+  <body>
+    <section layout:fragment="content">
+      <div class="container">
+        <div
+          class="d-flex justify-content-between align-items-center mt-5 mb-3 px-3 bg-primary p-5 rounded-2 text-light"
+        >
+          <div class="d-flex flex-column">
+            <h4 class="fw-bold">Meetings</h4>
+            <p>
+              The session timings are following your local timezone
+              <strong> Asia/Jakarta</strong>
+            </p>
+          </div>
+          <a th:href="@{/meeting/create}">
+            <button
+              type="button"
+              class="btn btn-light text-primary shadow-lg fw-semibold"
+            >
+              New Meeting
+            </button>
+          </a>
+        </div>
+        <div th:replace="components/navbar"></div>
+        <div class="container mt-4 ">
+          <div class="row">
+            <div th:each="meeting : ${meetings}" class="col-md-4 mb-4">
+              <div
+                class="card h-100 p-2 position-relative border border-primary-subtle bg-primary bg-opacity-10"
+                style="border: none"
+              >
+                <div class="card-body ">
+                  <div class="d-flex justify-content-between">
+                    <div class="card-title fw-medium fs-5" th:text="${meeting.name}">
+                      Meeting Name
+                    </div>
+                    <div class="dropdown position-absolute top-0 end-0">
+                      <button
+                        class="btn"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        style="outline: none; border: none"
+                      >
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+                      <div
+                        class="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton"
+                      >
+                        <a
+                          th:href="@{/meeting/update/{id} (id=${meeting.id})}"
+                          class="dropdown-item"
+                          th:if="${meeting.initiator.user.username == username}"
+                        >
+                          Update Meeting
+                        </a>
+
+                        <a
+                          th:href="@{/tracking-history/{id} (id=${meeting.id})}"
+                          class="dropdown-item"
+                        >
+                          activity
+                        </a>
+                        <form
+                          th:action="@{/meeting/{id} (id = ${meeting.id})}"
+                          th:method="DELETE"
+                          style="cursor: pointer"
+                        >
+                          <button
+                            type="submit"
+                            onclick="showConfirmation(event)"
+                            class="btn text-danger bg-transparent px-3 dropdown-item"
+                          >
+                            Delete
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card-text">
+                    <div
+                      th:text="${meeting.room.name}"
+                      th:unless="${meeting.linkRoom}"
+                    ></div>
+                    <div>
+                      <a
+                        th:href="${meeting.linkRoom}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        th:text="${meeting.linkRoom}"
+                        >Link Room</a
+                      >
+                    </div>
+                  </div>
+                  <hr class="text-primary"/>
+                  <div class="card-text mb-2">
+                    <div class="d-flex justify-content-between ">
+                      <span
+                        class="fw-bold"
+                        th:text="${#temporals.format(meeting.startMeeting, 'EEEE, dd/MM/yyyy')}"
+                      ></span>
+                      <div class="fw-bold">
+                        <span
+                          th:text="${#temporals.format(meeting.startMeeting, 'HH:mm')}"
+                        ></span>
+                        <span> - </span>
+                        <span
+                          th:text="${#temporals.format(meeting.endMeeting, 'HH:mm')}"
+                        ></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="position-absolute bottom-0 end-0 me-3">
+                    <i>
+                      <small> invited by</small>
+                      <small class="text-danger" th:text="${meeting.initiator.name}"></small>
+                    </i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal -->
+        <div
+          th:each="meeting : ${meetings}"
+          th:id="'meetingModal' + ${meeting.id}"
+          class="modal fade"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <!-- Modal content -->
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" th:text="${meeting.name}">
+                  Meeting Name
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <p th:text="${meeting.description}">Meeting Description</p>
+                <p>
+                  Start:
+                  <span
+                    th:text="${#temporals.format(meeting.startMeeting, 'yyyy-MM-dd HH:mm:ss')}"
+                    >Start Date</span
+                  >
+                </p>
+                <p>
+                  End:
+                  <span
+                    th:text="${#temporals.format(meeting.endMeeting, 'yyyy-MM-dd HH:mm:ss')}"
+                    >End Date</span
+                  >
+                </p>
+                <!-- Tambahkan atribut tambahan lainnya sesuai kebutuhan -->
+                <!-- <p th:text="${meeting.linkRoom}">Link Room</p>
+                <p th:text="${meeting.isOnline}">Is Online</p>
+                <p th:text="${meeting.room.name}">Room Name</p>
+                <p th:text="${meeting.status.name}">Status</p>
+                <p th:text="${meeting.initiator.name}">Initiator Name</p>
+                <p th:text="${meeting.noteTaker.name}">Note Taker Name</p> -->
+
+                <!-- Loop through attendees and display their details -->
+                <!-- <h5>Attendees:</h5>
+                <ul>
+                  <li th:each="attendee : ${meeting.attendances}">
+                    <span th:text="${attendee.participant.name}"></span>
+                    <span> (Email: </span>
+                    <span th:text="${attendee.participant.email}"></span>
+                    <span>, Phone: </span>
+                    <span th:text="${attendee.participant.phone}"></span>
+                    <span>)</span>
+                  </li>
+                </ul> -->
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <th:block layout:fragment="script">
+      <script th:src="@{/js/meeting.js}"></script>
+    </th:block>
+  </body>
+</html>

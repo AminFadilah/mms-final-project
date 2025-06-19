@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/main}"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Meeting</title>
+  </head>
+  <body>
+    <section layout:fragment="content">
+      <div class="container">
+        <div
+          class="d-flex justify-content-between align-items-center mt-5 mb-3 px-3 bg-primary p-5 rounded-2 text-light"
+        >
+          <div class="d-flex flex-column">
+            <h4 class="fw-bold">Meetings</h4>
+            <p>
+              The session timings are following your local timezone
+              <strong> Asia/Jakarta</strong>
+            </p>
+          </div>
+          <a th:href="@{/meeting/create}">
+            <button type="button" class="btn btn-light text-primary shadow-lg fw-semibold">
+              New Meeting
+            </button>
+          </a>
+        </div>
+        <div th:replace="components/navbar"></div>
+
+        <div class="container mt-4 mb-5">
+          <table
+            id="meetingTable"
+            class="table table-hover table-borderless w-100"
+          >
+            <thead class="table-primary">
+              <tr>
+                <th class="col-1">No</th>
+                <th class="col-3">Meeting Name</th>
+                <th class="col-2">Date</th>
+                <th class="col-2">Start</th>
+                <th class="col-2">End</th>
+                <th class="col-2">Room</th>
+                <th class></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Use Thymeleaf iteration to populate table rows -->
+              <tr th:each="meeting, number : ${meetings}">
+                <td th:text="${number.count}" class="text-secondary"></td>
+                <td th:text="${meeting.name}">Meeting Name</td>
+                <td
+                  th:text="${#temporals.format(meeting.startMeeting, 'EEEE, dd/MM/yyyy')}"
+                >
+                  Date
+                </td>
+                <td
+                  th:text="${#temporals.format(meeting.startMeeting, 'HH:mm')}"
+                >
+                  Start Time
+                </td>
+                <td th:text="${#temporals.format(meeting.endMeeting, 'HH:mm')}">
+                  End Time
+                </td>
+                <td>
+                  <span th:unless="${meeting.linkRoom}">
+                    <span th:text="${meeting.room.name}">Room Name</span>
+                  </span>
+                  <span th:if="${meeting.linkRoom}">
+                    <a
+                      th:href="${meeting.linkRoom}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      th:text="${meeting.linkRoom}"
+                      >Link Room</a
+                    >
+                  </span>
+                </td>
+                <td>
+                  <div class="dropdown">
+                    <button
+                      class="btn"
+                      type="button"
+                      id="dropdownMenuButton"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      style="outline: none; border: none"
+                    >
+                      <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <div
+                      class="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton"
+                    >
+                      <a
+                        class="dropdown-item"
+                        th:href="@{/meeting/add-mom/{id} (id=${meeting.id})}"
+                        th:if="${meeting.mom == null && meeting.noteTaker.user.username == username}"
+                        id="addMomLink"
+                        >Add MOM</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        th:href="@{/mom/{id} (id=${meeting.id})}"
+                        style="cursor: pointer"
+                        >View MOM</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        th:href="@{/tracking-history/{id} (id=${meeting.id})}"
+                        >activity</a
+                      >
+                      <form
+                        th:action="@{/meeting/{id} (id = ${meeting.id})}"
+                        th:method="DELETE"
+                        style="cursor: pointer"
+                      >
+                        <button
+                          type="submit"
+                          onclick="showConfirmation(event)"
+                          class="btn text-danger bg-transparent px-3 dropdown-item"
+                        >
+                          Delete
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <th:block layout:fragment="script">
+      <script th:src="@{/js/meeting.js}"></script>
+    </th:block>
+  </body>
+</html>
